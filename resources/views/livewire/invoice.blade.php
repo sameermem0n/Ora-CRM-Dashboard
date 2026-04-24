@@ -23,7 +23,7 @@
                                 <select wire:model="serviceid" name="serviceid" class="form-control" required>
                                     <option value="">Select Service</option>
                                     @foreach($services as $val)
-                                    <option value="{{$val->id}}">{{$val->service->title}}</option>
+                                     <option value="{{$val->id}}">{{$val->title}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -36,7 +36,7 @@
                                 <select name="package_id[]" multiple class="form-control" required>
                                     <option value="">Select Package</option>
                                     @foreach($packages as $val)
-                                    <option value="{{$val->id}}">{{$val->package->title}}</option>
+                                    <option value="{{$val->id}}">{{$val->title}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -67,9 +67,6 @@
                                 <label>Expiry Date <span class="text-danger">*</span></label>
                                 <input type="date" name="expiry_date" require class="form-control">
                             </div>
-                            @foreach($purchases as $val)
-                            <input type="hidden" name="purchase_id" class="form-control" value="{{$val->id}}">
-                            @endforeach
                         </div>
                     </div>
                     <div class="form-group text-left mb-0">
@@ -99,19 +96,18 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody>x
                         @foreach ($invoices as $invoice)
                         <tr>
                             <td>{{$invoice->client->name}}</td>
-                            <td>{{$invoice->purchase->service->title}}</td>
-                            <td>{{$invoice->purchase->package->title}}</td>
+                            <td>{{$invoice->service_title}}</td>
+                            <td>{{$invoice->package_title}}</td>
                             <td>{{$invoice->invoice_type}}</td>
                             <td>
                                 <button class="btn btn-warning btn-xs" wire:click="updateData({{$invoice['id']}})"><i class="far fa-edit"></i></button>
                             </td>
                         </tr>
                         @endforeach
-                        {{$data}}
                     </tbody>
                 </table>
 

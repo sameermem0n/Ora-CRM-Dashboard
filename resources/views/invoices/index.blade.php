@@ -49,7 +49,7 @@
                 <tr>
                   <td>{{$loop->iteration}}</td>
                   <td>{{$val->client->name}}</td>
-                  <td>{{$val->purchase->service->title}}</td>
+                  <td>{{$val->service_title}}</td>
                   <td>{{$val->expiry_date}}</td>
                   <td>
                     <?php
@@ -64,6 +64,9 @@
                   <td>
                     <a class="btn btn-success btn-xs" href="{{ route('invoices.show',$val-> id) }}">
                       <i class="fas fa-check-square"></i>
+                    </a>
+                    <a class="btn btn-info btn-xs" href="{{ route('paymint.index') }}" title="Paymint">
+                      <i class="fas fa-money-bill"></i>
                     </a>
                     <a class="btn btn-warning btn-xs" href="{{ route('invoices.edit',$val->id) }}">
                       <i class="far fa-edit"></i>

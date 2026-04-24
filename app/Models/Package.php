@@ -15,4 +15,9 @@ class Package extends Model
         'duration',
         'status',
     ];
+
+    public function service()
+    {
+        return $this->belongsTo(Services::class, 'service_id');
+    }
 }

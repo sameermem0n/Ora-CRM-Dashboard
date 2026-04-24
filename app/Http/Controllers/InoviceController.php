@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Invoicem;
-use App\Models\Package;
-use App\Models\Services;
 use Illuminate\Http\Request;
-use App\Models\Purchase_service;
+use Illuminate\Support\Facades\Schema;
 
 class InoviceController extends Controller
 {
@@ -19,7 +17,9 @@ class InoviceController extends Controller
     public function index(Request $request)
     {
         // $data = "Yes wrking";
-        $data = Invoicem::orderBy('id', 'DESC')->paginate(5);
+        $data = Invoicem::with(['client', 'package.service', 'purchase.service', 'purchase.package'])
+            ->orderBy('id', 'DESC')
+            ->paginate(5);
         return view('invoices.index', compact('data'))
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
@@ -42,28 +42,41 @@ class InoviceController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
         $this->validate($request, [
             'clientid' => 'required',
-            'purchase_id' => 'required',
+            'serviceid' => 'required',
+            'package_id' => 'required|array|min:1',
             'invoice_status' => 'required',
             'invoice_type' => 'required',
             'expiry_date' => 'required',
         ]);
-        for ($i = 0; $i < count($request->package_id); $i++) {
+
+        $packageIds = $request->input('package_id', []);
+        $hasPackageColumn = Schema::hasColumn('invoices', 'package_id');
+        $hasPurchaseColumn = Schema::hasColumn('invoices', 'purchase_service_id');
+
+        foreach ($packageIds as $packageId) {
             $data = [
                 'status' => $request->invoice_status,
                 'client_id' => $request->clientid,
-                'purchase_service_id' => $request->purchase_id,
                 'expiry_date' => $request->expiry_date,
                 'invoice_number' => 44,
                 'invoice_type' => $request->invoice_type,
             ];
-            // dd($data);
 
-            $sub_package = Invoicem::create($data);
-            return redirect()->route('invoices.index')->with('success', 'Invoice created successfully');
+            if ($hasPackageColumn) {
+                $data['package_id'] = $packageId;
+            }
+
+            // Fallback for older schemas where package_id does not exist yet.
+            if (!$hasPackageColumn && $hasPurchaseColumn) {
+                $data['purchase_service_id'] = $packageId;
+            }
+
+            Invoicem::create($data);
         }
+
+        return redirect()->route('invoices.index')->with('success', 'Invoice created successfully');
     }
 
     /**

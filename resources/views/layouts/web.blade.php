@@ -234,7 +234,7 @@
                             </a>
                             <ul class="nav-second-level" aria-expanded="false">
                                 <li><a href="{{Route('invoices.index')}}"> <i class="fa fa-light fa-file-invoice"></i> Invoices</a></li>
-                                <li><a href="{{Route('paymint.index')}}"> <i class="fa fa-light fa-file-invoice"></i> Payments</a></li>
+                                {{-- <li><a href="{{Route('paymint.index')}}"> <i class="fa fa-light fa-file-invoice"></i> Payments</a></li> --}}
                                 <li><a href="{{Route('purchases.index')}}"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Purchase Service</a></li>
                             </ul>
                         </li>

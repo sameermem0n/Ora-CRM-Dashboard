@@ -4,6 +4,8 @@ namespace App\Http\Livewire;
 
 use App\Models\Client;
 use App\Models\Invoicem;
+use App\Models\Package;
+use App\Models\Services;
 use Livewire\Component;
 use App\Models\Purchase_service;
 
@@ -46,15 +48,20 @@ class Invoice extends Component
 
     public function updatedClientid($id)
     {
-        $this->services = Purchase_service::where('client_id', $id)->with('client')->get()->unique('service');
+        $this->services = Services::where('status', 1)->get();
         $this->packages = collect();
-        $this->invoices = Invoicem::where('client_id', $id)->with('client')->get();
+        $this->invoices = Invoicem::where('client_id', $id)
+            ->with(['client', 'package.service', 'purchase.service', 'purchase.package'])
+            ->get();
         $this->purchases = Purchase_service::where('client_id', $id)->with('client')->get();
     }
+
+
     public function updatedServiceid($id)
     {
-        $this->packages = Purchase_service::where(['client_id' => $this->clientid, 'service_id' => $id])->with('client')->get();
-        // dd($this->clientid);
+        $this->packages = Package::where('service_id', $id)
+            ->where('status', 1)
+            ->get();
     }
     public function updateData($id)
     {
