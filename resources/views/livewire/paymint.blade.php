@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="card-box">
-            <form action="{{Route('invoices.store')}}" method="post" class="parsley-examples" novalidate="">
+            <form action="{{Route('paymint.store')}}" method="post" class="parsley-examples" novalidate="">
                 {{ csrf_field() }}
                 <div class="row">
                     <div class="col-md-6">
@@ -18,13 +18,13 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Invoice ID<span class="text-danger">*</span></label>
-                            <select name="invoice_type" class="form-control" required>
+                            <select name="invoice_id" class="form-control" required>
                                 <option value="">Select Invoice</option>
                                 @foreach($invoices as $val)
-                                <option value="">{{$val->id}}</option>
+                                <option value="{{$val->id}}">{{$val->id}}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> 
                     </div>
                 </div>
                 <div class="form-group text-left mb-0">

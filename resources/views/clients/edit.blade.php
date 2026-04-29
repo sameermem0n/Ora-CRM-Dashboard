@@ -43,56 +43,62 @@
 
                         {!! Form::model($client, ['method' => 'PATCH','route' => ['clients.update', $client->id]]) !!}
                         <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <strong>Name:</strong>
-                                    {!! Form::text('name', null, array('placeholder' => 'Name','class' => 'form-control')) !!}
+                                    <label>Name<span class="text-danger">*</span></label>
+                                    {!! Form::text('name', null, array('placeholder' => 'Name','class' => 'form-control', 'required')) !!}
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <strong>Email:</strong>
+                                    <label>Organization<span class="text-danger">*</span></label>
+                                    {!! Form::text('organization', null, array('placeholder' => 'Organization','class' => 'form-control', 'required')) !!}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Email<span class="text-danger">*</span></label>
                                     {!! Form::text('email', null, array('placeholder' => 'Email','disabled','class' => 'form-control')) !!}
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <strong>Address:</strong>
-                                    {!! Form::text('address', null, array('placeholder' => 'Addres','class' => 'form-control')) !!}
+                                    <label>Address<span class="text-danger">*</span></label>
+                                    {!! Form::text('address', null, array('placeholder' => 'Address','class' => 'form-control', 'required')) !!}
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <strong>City:</strong>
-                                    {!! Form::text('city', null, array('placeholder' => 'City','class' => 'form-control')) !!}
+                                    <label>City<span class="text-danger">*</span></label>
+                                    {!! Form::text('city', null, array('placeholder' => 'City','class' => 'form-control', 'required')) !!}
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <strong>Contact:</strong>
-                                    {!! Form::text('contact', null, array('placeholder' => 'Contact','class' => 'form-control')) !!}
+                                    <label>Contact<span class="text-danger">*</span></label>
+                                    {!! Form::text('contact', null, array('placeholder' => 'Contact','class' => 'form-control', 'required')) !!}
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <strong>Current Status:</strong>
-                                    <select name="status" class="form-control">
-                                        <?php
-                                        if ($client->status == '1') {
-                                            echo '<option value="1">Active</option>';
-                                            echo '<option value="0">In Active</option>';
-                                        } else {
-                                            echo '<option value="0">In Active</option>';
-                                            echo '<option value="1">Active</option>';
-                                        }
-                                        ?>
+                                    <label>Account Status<span class="text-danger">*</span></label>
+                                    <select name="status" class="form-control" required>
+                                        <option value="0" {{ (string) $client->status === '0' ? 'selected' : '' }}>In Active</option>
+                                        <option value="1" {{ (string) $client->status === '1' ? 'selected' : '' }}>Active</option>
                                     </select>
-
                                 </div>
                             </div>
-
-                            <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                            <div class="col-md-6">
+                                <div class="form-group text-right mb-0" style="padding-top: 28px;">
+                                    <button type="submit" class="btn btn-primary waves-effect waves-light mr-1">Submit</button>
+                                    <a href="{{ route('clients.index') }}" class="btn btn-secondary waves-effect waves-light">Cancel</a>
+                                </div>
                             </div>
                         </div>
                         {!! Form::close() !!}

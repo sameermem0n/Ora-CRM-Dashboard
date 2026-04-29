@@ -16,7 +16,7 @@ class Sub_packagesController extends Controller
      */
     public function index(Request $request)
     {
-        $data = Sub_Package::orderBy('id', 'DESC')->paginate(5);
+        $data = Sub_Package::with(['package', 'sub_service'])->orderBy('id', 'DESC')->paginate(5);
 
 
         return view('sub-packages.index', compact('data'))
@@ -68,7 +68,7 @@ class Sub_packagesController extends Controller
      * @param  \App\Models\Sub_Package  $sub_Package
      * @return \Illuminate\Http\Response
      */
-    public function show(Sub_Package $sub_Package)
+    public function show(Sub_Package $sub_package)
     {
         //
     }
@@ -79,9 +79,12 @@ class Sub_packagesController extends Controller
      * @param  \App\Models\Sub_Package  $sub_Package
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sub_Package $sub_Package)
+    public function edit(Sub_Package $sub_package)
     {
-        //
+        $services = Services::pluck('title', 'id');
+        $packages = Package::pluck('title', 'id');
+
+        return view('sub-packages.edit', compact('sub_package', 'services', 'packages'));
     }
 
     /**
@@ -91,9 +94,21 @@ class Sub_packagesController extends Controller
      * @param  \App\Models\Sub_Package  $sub_Package
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Sub_Package $sub_Package)
+    public function update(Request $request, Sub_Package $sub_package)
     {
-        //
+        $this->validate($request, [
+            'package_id' => 'required|exists:packages,id',
+            'sub_service_id' => 'required|exists:sub_services,id',
+            'description' => 'required|string',
+        ]);
+
+        $sub_package->update([
+            'package_id' => $request->package_id,
+            'sub_service_id' => $request->sub_service_id,
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('sub_packages.index')->with('success', 'Sub Package updated successfully');
     }
 
     /**
@@ -102,8 +117,10 @@ class Sub_packagesController extends Controller
      * @param  \App\Models\Sub_Package  $sub_Package
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Sub_Package $sub_Package)
+    public function destroy(Sub_Package $sub_package)
     {
-        //
+        $sub_package->delete();
+
+        return redirect()->route('sub_packages.index')->with('success', 'Sub Package deleted successfully');
     }
 }

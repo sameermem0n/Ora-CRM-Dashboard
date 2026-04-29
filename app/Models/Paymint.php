@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Paymint extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'status',
+        'invoice_id',
+        'pay_amount',
+    ];
 }

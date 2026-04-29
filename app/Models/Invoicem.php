@@ -42,6 +42,13 @@ class Invoicem extends Model
         return $package ? $package->title : '-';
     }
 
+    public function getPackagePriceAttribute(): int
+    {
+        $package = $this->resolvePackage();
+
+        return $package ? (int) $package->price : 0;
+    }
+
     public function getServiceTitleAttribute(): string
     {
         $package = $this->resolvePackage();

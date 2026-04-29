@@ -40,6 +40,7 @@ class ClientController extends Controller
         // dd($request);
         $this->validate($request, [
             'name' => 'required',
+            'organization' => 'required',
             'email' => 'required',
             'password' => 'required',
             'contact' => 'required',
@@ -48,6 +49,9 @@ class ClientController extends Controller
             'status' => 'required',
         ]);
         $input = $request->all();
+        if (empty($input['organization']) && !empty($input['org'])) {
+            $input['organization'] = $input['org'];
+        }
         $clients = Client::create($input);
         return redirect()->route('clients.index')->with('success', 'Client created successfully');
     }
@@ -87,6 +91,9 @@ class ClientController extends Controller
     {
         // dd($request);
         $input = $request->all();
+        if (empty($input['organization']) && !empty($input['org'])) {
+            $input['organization'] = $input['org'];
+        }
         $client = Client::find($id);
         $client->update($input);
         return redirect()->route('clients.index')->with('success', 'Client Updated successfully');

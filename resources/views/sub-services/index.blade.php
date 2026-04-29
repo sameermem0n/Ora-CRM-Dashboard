@@ -39,14 +39,23 @@
                                     <th>No</th>
                                     <th>Service Title</th>
                                     <th>item Title</th>
+                                    <th width="180px">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($data as $key => $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->service->title }}</td>
+                                    <td>{{ optional($item->service)->title ?: '-' }}</td>
                                     <td>{{ $item->title }}</td>
+                                    <td>
+                                        <a class="btn btn-warning btn-xs" href="{{ route('sub-services.edit', $item->id) }}" title="Edit Sub Service">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+                                        {!! Form::open(['method' => 'DELETE','route' => ['sub-services.destroy', $item->id],'style'=>'display:inline']) !!}
+                                        {!! Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'title' => 'Delete Sub Service', 'onclick' => "return confirm('Delete this sub service?')"] ) !!}
+                                        {!! Form::close() !!}
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>

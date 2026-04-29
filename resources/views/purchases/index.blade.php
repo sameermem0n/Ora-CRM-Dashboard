@@ -48,10 +48,10 @@
                 @foreach ($data as $key => $purchases)
                 <tr>
                   <td>{{ $loop->iteration }}</td>
-                  <td>{{ $purchases->client->name }}</td>
-                  <td>{{ $purchases->package->title }}</td>
-                  <td>{{ $purchases->service->title }}</td>
-                  <td>{{ $purchases->package->duration }} Months</td>
+                  <td>{{ optional($purchases->client)->name ?: '-' }}</td>
+                  <td>{{ optional($purchases->package)->title ?: '-' }}</td>
+                  <td>{{ optional($purchases->service)->title ?: '-' }}</td>
+                  <td>{{ $purchases->duration ?: optional($purchases->package)->duration }} Months</td>
                   <td>
                     <?php
                     if ($purchases->status == '1') {
@@ -62,14 +62,14 @@
                     ?>
                   </td>
                   <td>
-                    <a class="btn btn-success btn-xs" href="{{ route('purchases.show',$purchases->id) }}">
-                      <i class="fas fa-check-square"></i>
+                    <a class="btn btn-success btn-xs" href="{{ route('purchases.show',$purchases->id) }}" title="View Purchase">
+                      <i class="fas fa-eye"></i>
                     </a>
-                    <a class="btn btn-warning btn-xs" href="{{ route('purchases.edit',$purchases->id) }}">
+                    <a class="btn btn-warning btn-xs" href="{{ route('purchases.edit',$purchases->id) }}" title="Edit Purchase">
                       <i class="far fa-edit"></i>
                     </a>
                     {!! Form::open(['method' => 'DELETE','route' => ['purchases.destroy', $purchases->id],'style'=>'display:inline']) !!}
-                    {!! Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs'] ) !!}
+                    {!! Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'title' => 'Delete Purchase', 'onclick' => "return confirm('Delete this purchase?')"] ) !!}
                     {!! Form::close() !!}
                   </td>
                 </tr>

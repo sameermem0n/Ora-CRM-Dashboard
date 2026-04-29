@@ -45,12 +45,15 @@
                                 @foreach ($data as $key => $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->package->title }}</td>
-                                    <td>{{ $item->sub_service->title }} [ {{$item->description}} ]</td>
+                                    <td>{{ optional($item->package)->title ?: '-' }}</td>
+                                    <td>{{ optional($item->sub_service)->title ?: '-' }} [ {{$item->description}} ]</td>
                                     <td>
                                         <a class="btn btn-warning btn-xs" href="{{ route('sub_packages.edit',$item->id) }}">
                                             <i class="far fa-edit"></i>
                                         </a>
+                                        {!! Form::open(['method' => 'DELETE','route' => ['sub_packages.destroy', $item->id],'style'=>'display:inline']) !!}
+                                        {!! Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'title' => 'Delete Sub Package', 'onclick' => "return confirm('Delete this sub package?')"] ) !!}
+                                        {!! Form::close() !!}
                                     </td>
                                 </tr>
                                 @endforeach

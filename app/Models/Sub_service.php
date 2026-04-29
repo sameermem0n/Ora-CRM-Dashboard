@@ -14,6 +14,6 @@ class Sub_service extends Model
     ];
     public function service()
     {
-        return $this->hasOne('App\Models\Services', 'id', 'service_id');
+        return $this->belongsTo('App\Models\Services', 'service_id');
     }
 }

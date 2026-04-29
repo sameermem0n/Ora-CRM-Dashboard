@@ -53,7 +53,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Organization<span class="text-danger">*</span></label>
-                                        <input type="text" name="org" parsley-trigger="change" required placeholder="If You Are Not Working For Any Organization Then You Can  Say Own Self" class="form-control">
+                                        <input type="text" name="organization" parsley-trigger="change" required placeholder="If You Are Not Working For Any Organization Then You Can  Say Own Self" class="form-control">
                                     </div>
                                 </div>
                             </div>

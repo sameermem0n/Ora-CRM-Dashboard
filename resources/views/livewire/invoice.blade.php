@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card-box">
-                <form action="{{Route('invoices.store')}}" method="post" class="parsley-examples" novalidate="">
+                <form action="{{ route('invoices.index') }}" method="get" class="parsley-examples" novalidate>
                     {{ csrf_field() }}
                     <div class="row">
                         <div class="col-md-6">
@@ -33,7 +33,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Package <span class="text-danger">*</span></label>
-                                <select name="package_id[]" multiple class="form-control" required>
+                                <select name="package_id[]" multiple class="form-control">
                                     <option value="">Select Package</option>
                                     @foreach($packages as $val)
                                     <option value="{{$val->id}}">{{$val->title}}</option>
@@ -70,8 +70,9 @@
                         </div>
                     </div>
                     <div class="form-group text-left mb-0">
-                        <button class="btn btn-primary waves-effect waves-light mr-1" type="submit">
-                            View
+                   
+                        <button class="btn btn-primary waves-effect waves-light mr-1" type="submit" formaction="{{ route('invoices.store') }}" formmethod="post">
+                            Create Invoice
                         </button>
                         <button type="reset" class="btn btn-secondary waves-effect waves-light">
                             Cancel
@@ -90,21 +91,23 @@
                     <thead>
                         <tr>
                             <th>Client Name</th>
-                            <th>Service Type</th>
+                            <th>Organization</th>
                             <th>Package Type</th>
                             <th>invoice Type</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>x
+                    <tbody>
                         @foreach ($invoices as $invoice)
                         <tr>
                             <td>{{$invoice->client->name}}</td>
-                            <td>{{$invoice->service_title}}</td>
+                            <td>{{ optional($invoice->client)->organization ?: '-' }}</td>
                             <td>{{$invoice->package_title}}</td>
                             <td>{{$invoice->invoice_type}}</td>
                             <td>
-                                <button class="btn btn-warning btn-xs" wire:click="updateData({{$invoice['id']}})"><i class="far fa-edit"></i></button>
+                                <a class="btn btn-warning btn-xs" href="{{ route('invoices.edit', $invoice->id) }}">
+                                    <i class="far fa-edit"></i>
+                                </a>
                             </td>
                         </tr>
                         @endforeach

@@ -17,7 +17,7 @@ class Purchase_serviceController extends Controller
      */
     public function index(Request $request)
     {
-        $data = Purchase_service::orderBy('id', 'DESC')->paginate(5);
+        $data = Purchase_service::with(['client', 'package', 'service'])->orderBy('id', 'DESC')->paginate(5);
         return view('purchases.index', compact('data'))
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
@@ -80,7 +80,7 @@ class Purchase_serviceController extends Controller
      */
     public function show($id)
     {
-        $Purchase = Purchase_service::find($id);
+        $Purchase = Purchase_service::with(['client', 'package', 'service'])->find($id);
         return view('purchases.show', compact('Purchase'));
     }
 

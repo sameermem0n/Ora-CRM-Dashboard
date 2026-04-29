@@ -37,9 +37,11 @@
                 <tr>
                   <th>No</th>
                   <th>Client Name</th>
-                  <th>Service</th>
+                  <th>Organization</th>
                   <th>expiry Date</th>
                   <th>Current Status</th>
+                  <th>Total Amount</th>
+                  <th>Dues</th>
                   <th>Inovice Title</th>
                   <th>Action</th>
                 </tr>
@@ -48,8 +50,8 @@
                 @foreach($data as $val)
                 <tr>
                   <td>{{$loop->iteration}}</td>
-                  <td>{{$val->client->name}}</td>
-                  <td>{{$val->service_title}}</td>
+                  <td>{{ optional($val->client)->name ?: '-' }}</td>
+                  <td>{{ optional($val->client)->organization ?: '-' }}</td>
                   <td>{{$val->expiry_date}}</td>
                   <td>
                     <?php
@@ -60,24 +62,38 @@
                     }
                     ?>
                   </td>
+                  <td>
+                    <?php
+                    $totalAmount = $val->package_price;
+                    echo number_format($totalAmount, 0);
+                    ?>
+                  </td>
+                  <td>
+                    <?php
+                    $totalAmount = $val->package_price;
+                    $payAmount = \App\Models\Paymint::where('invoice_id', $val->id)->value('pay_amount') ?? 0;
+                    $dues = max($totalAmount - $payAmount, 0);
+                    echo number_format($dues, 0);
+                    ?>
+                  </td>
                   <td>{{$val->invoice_type}}</td>
                   <td>
-                    <a class="btn btn-success btn-xs" href="{{ route('invoices.show',$val-> id) }}">
-                      <i class="fas fa-check-square"></i>
+                    <a class="btn btn-success btn-xs" href="{{ route('invoices.show', $val->id) }}" title="View Invoice">
+                      <i class="fas fa-eye"></i>
                     </a>
-                    <a class="btn btn-info btn-xs" href="{{ route('paymint.index') }}" title="Paymint">
+                    <a class="btn btn-info btn-xs" href="{{ route('paymint.index', ['client_id' => $val->client_id, 'invoice_id' => $val->id]) }}" title="Payment">
                       <i class="fas fa-money-bill"></i>
                     </a>
-                    <a class="btn btn-warning btn-xs" href="{{ route('invoices.edit',$val->id) }}">
+                    <a class="btn btn-warning btn-xs" href="{{ route('invoices.edit', $val->id) }}" title="Edit Invoice">
                       <i class="far fa-edit"></i>
                     </a>
-                    {!! Form::open(['method' => 'DELETE','route' => ['invoices.destroy', $val->id],'style'=>'display:inline']) !!}
-                    {!! Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs'] ) !!}
+                    {!! Form::open(['method' => 'DELETE', 'route' => ['invoices.destroy', $val->id], 'style' => 'display:inline']) !!}
+                    {!! Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'title' => 'Delete Invoice', 'onclick' => "return confirm('Delete this invoice?')"] ) !!}
                     {!! Form::close() !!}
                   </td>
                 </tr>
                 @endforeach
-              <tbody>
+              </tbody>
             </table>
           </div>
         </div>

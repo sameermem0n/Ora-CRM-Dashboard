@@ -16,7 +16,7 @@
 
     <!-- App css -->
     <link href="{{asset('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" id="bootstrap-stylesheet" />
-    <link href="{{asset('assets/css/all.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/fontawesome-free-6.2.1-web/css/all.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset('assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset('assets/css/app.min.css')}}" rel="stylesheet" type="text/css" id="app-stylesheet" />
     <link href="{{asset('assets/libs/jquery-toast/jquery.toast.min.css')}}" rel="stylesheet" type="text/css" />
@@ -89,11 +89,12 @@
                     </div>
                 </li>
 
+                @auth
                 <li class="dropdown notification-list">
                     <a class="nav-link dropdown-toggle nav-user mr-0 waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                        <img src="{{Auth::user()->profile_photo_url}}" alt="user-image" class="rounded-circle">
+                        <img src="{{ Auth::user()->profile_photo_url ?? asset('assets/images/users/avatar-1.jpg') }}" alt="user-image" class="rounded-circle">
                         <span class="pro-user-name ml-1">
-                            {{Auth::user()->name}} <i class="mdi mdi-chevron-down"></i>
+                            {{ Auth::user()->name }} <i class="mdi mdi-chevron-down"></i>
                         </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
@@ -129,6 +130,7 @@
 
                     </div>
                 </li>
+                @endauth
 
                 <li class="dropdown notification-list">
                     <a href="javascript:void(0);" class="nav-link right-bar-toggle waves-effect waves-light">

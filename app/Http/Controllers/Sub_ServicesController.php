@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Sub_Service;
+use App\Models\Sub_service;
 use Illuminate\Http\Request;
 use App\Models\Services;
 
@@ -16,7 +16,7 @@ class Sub_ServicesController extends Controller
     public function index(Request $request)
     {
         $services = Services::get();
-        $data = Sub_service::orderBy('id', 'DESC')->paginate(5);
+        $data = Sub_service::with('service')->orderBy('id', 'DESC')->paginate(5);
         return view('sub-services.index', compact('data', 'services'))
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
@@ -53,45 +53,58 @@ class Sub_ServicesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Sub_Service  $sub_Service
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Sub_Service $sub_Service)
+    public function show($id)
     {
-        //
+        return redirect()->route('sub-services.edit', $id);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Sub_Service  $sub_Service
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sub_Service $sub_Service)
+    public function edit($id)
     {
-        //
+        $subService = Sub_service::findOrFail($id);
+        $services = Services::get();
+
+        return view('sub-services.edit', compact('subService', 'services'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Sub_Service  $sub_Service
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Sub_Service $sub_Service)
+    public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'service_id' => 'required',
+            'title' => 'required',
+        ]);
+
+        $subService = Sub_service::findOrFail($id);
+        $subService->update($request->only('service_id', 'title'));
+
+        return redirect()->route('sub-services.index')->with('success', 'Sub service updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Sub_Service  $sub_Service
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Sub_Service $sub_Service)
+    public function destroy($id)
     {
-        //
+        Sub_service::findOrFail($id)->delete();
+
+        return redirect()->route('sub-services.index')->with('success', 'Sub service deleted successfully');
     }
 }

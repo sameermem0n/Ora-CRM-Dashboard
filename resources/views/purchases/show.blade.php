@@ -24,44 +24,51 @@
                 </div>
             </div>
             <!-- end page title -->
-            <a href="{{Route('purchases.index')}}" style="font-size: 20px;"><i class="fa fa-arrow-circle-left mb-2" aria-hidden="true"></i></a>
-            <a href="{{Route('packages.index')}}" style="font-size: 20px;"><i class="fa fa-arrow-circle-left mb-2" aria-hidden="true"></i></a>
+            {{-- <a href="{{Route('purchases.index')}}" class="btn btn-secondary mb-2" title="Back to Purchases">
+                <i class=""></i> Back
+            </a> --}}
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card-box">
                         <div class="row text-dark">
                             <div class="col-xs-12 col-sm-12 col-md-12">
                                 <div class="form-group">
-                                    <strong>Name:</strong>
-                                    {{ $package->title }}
+                                    <strong>Client Name:</strong>
+                                    {{ optional($Purchase->client)->name ?: '-' }}
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12">
                                 <div class="form-group">
                                     <strong>Service Type:</strong>
-                                    {{ $package->service_id }}
+                                    {{ optional($Purchase->service)->title ?: '-' }}
                                 </div>
                             </div>
                         </div>
                         <div class="row text-dark">
                             <div class="col-xs-12 col-sm-12 col-md-12">
                                 <div class="form-group">
-                                    <strong>Price:</strong>
-                                    {{ $package->price }}
+                                    <strong>Package:</strong>
+                                    {{ optional($Purchase->package)->title ?: '-' }}
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12">
                                 <div class="form-group">
-                                    <strong>package Duration:</strong>
-                                    {{ $package->duration}} Months
+                                    <strong>Package Price:</strong>
+                                    {{ optional($Purchase->package)->price ?: 0 }}
                                 </div>
                             </div>
                         </div>
                         <div class="row text-dark">
+                            <div class="col-xs-12 col-sm-12 col-md-12">
+                                <div class="form-group">
+                                    <strong>Duration:</strong>
+                                    {{ $Purchase->duration ?: optional($Purchase->package)->duration }} Months
+                                </div>
+                            </div>
                             <div class="col-xs-12 col-sm-12 col-md-12">
                                 <div class="form-group">
                                     <strong>Status: </strong>
-                                    <?php if ($package->status == 1) {
+                                    <?php if ($Purchase->status == 1) {
                                         echo "<span class='bg-success text-white rounded p-1'>Active</span>";
                                     } else {
                                         echo "<span class='bg-danger text-white p-1 rounded'>Inactive</span>";

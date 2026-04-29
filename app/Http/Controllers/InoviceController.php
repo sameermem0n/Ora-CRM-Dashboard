@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Invoicem;
+use App\Models\Paymint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
@@ -16,10 +17,32 @@ class InoviceController extends Controller
      */
     public function index(Request $request)
     {
-        // $data = "Yes wrking";
-        $data = Invoicem::with(['client', 'package.service', 'purchase.service', 'purchase.package'])
-            ->orderBy('id', 'DESC')
-            ->paginate(5);
+        $query = Invoicem::with(['client', 'package.service', 'purchase.service', 'purchase.package']);
+
+        if ($request->filled('clientid')) {
+            $query->where('client_id', $request->input('clientid'));
+        }
+
+        if ($request->filled('serviceid')) {
+            // filter invoices where package's service or purchase's service matches
+            $serviceId = $request->input('serviceid');
+            $query->where(function ($q) use ($serviceId) {
+                $q->whereHas('package', function ($q2) use ($serviceId) {
+                    $q2->where('service_id', $serviceId);
+                })->orWhereHas('purchase', function ($q3) use ($serviceId) {
+                    $q3->where('service_id', $serviceId);
+                });
+            });
+        }
+
+        if ($request->has('package_id')) {
+            $ids = (array) $request->input('package_id');
+            $query->where(function ($q) use ($ids) {
+                $q->whereIn('package_id', $ids)->orWhereIn('purchase_service_id', $ids);
+            });
+        }
+
+        $data = $query->orderBy('id', 'DESC')->paginate(5);
         return view('invoices.index', compact('data'))
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
@@ -59,6 +82,7 @@ class InoviceController extends Controller
             $data = [
                 'status' => $request->invoice_status,
                 'client_id' => $request->clientid,
+                'purchase_service_id' => null,
                 'expiry_date' => $request->expiry_date,
                 'invoice_number' => 44,
                 'invoice_type' => $request->invoice_type,
@@ -85,9 +109,31 @@ class InoviceController extends Controller
      * @param  \App\Models\Inovice  $inovice
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show($id)
     {
-        return view("invoices.show");
+        $invoice = Invoicem::with(['client', 'package.service', 'purchase.service', 'purchase.package'])->findOrFail($id);
+        $client = $invoice->client ?: (object) [
+            'name' => '-',
+            'organization' => '-',
+            'city' => '-',
+            'address' => '-',
+            'contact' => '-',
+        ];
+        $purchase = $invoice->purchase ?: (object) [
+            'purchased_date' => optional($invoice->created_at)->format('Y-m-d') ?: '-',
+            'id' => $invoice->id,
+        ];
+        $orderDate = optional($invoice->purchase)->purchased_date;
+
+        if (empty($orderDate) || $orderDate === '-') {
+            $orderDate = optional($invoice->created_at)->format('Y-m-d')
+                ?: optional($invoice->updated_at)->format('Y-m-d')
+                ?: '-';
+        }
+
+        $orderId = optional($invoice->purchase)->id ?: $invoice->id;
+
+        return view("invoices.show", compact('invoice', 'client', 'purchase', 'orderDate', 'orderId'));
     }
 
     /**
@@ -98,8 +144,8 @@ class InoviceController extends Controller
      */
     public function edit($id)
     {
-        $invoices = Invoicem::find($id);
-        return view("invoices.edit", compact('invoices'));
+        $invoice = Invoicem::with(['client', 'package.service', 'purchase.service', 'purchase.package'])->findOrFail($id);
+        return view("invoices.edit", compact('invoice'));
     }
 
     /**
@@ -109,9 +155,17 @@ class InoviceController extends Controller
      * @param  \App\Models\Inovice  $inovice
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'status' => 'required|in:0,1',
+        ]);
+
+        $invoice = Invoicem::findOrFail($id);
+        $invoice->status = (int) $request->status;
+        $invoice->save();
+
+        return redirect()->route('invoices.index')->with('success', 'Invoice updated successfully');
     }
 
     /**
@@ -120,8 +174,14 @@ class InoviceController extends Controller
      * @param  \App\Models\Inovice  $inovice
      * @return \Illuminate\Http\Response
      */
-    public function destroy()
+    public function destroy($id)
     {
-        //
+        $invoice = Invoicem::findOrFail($id);
+
+        Paymint::where('invoice_id', $invoice->id)->delete();
+        $invoice->delete();
+
+        return redirect()->route('invoices.index')->with('success', 'Invoice deleted successfully');
     }
 }
+
