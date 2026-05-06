@@ -32,4 +32,11 @@ Includes secure authentication, profile management, and role-based access contro
 This project is licensed under the MIT License.
 
 ## Screenshots
-![Dashboard](https://github.com/alijanrahujo/Ora-CRM/blob/main/public/assets/images/Screenshots/CRM%20Dashboard.png)
+![Dashboard](## Screenshots
+![CRM Dashboard](https://github.com/sameermem0n/Ora-CRM-Dashboard/blob/main/public/assets/images/Screenshots/CRM%20Dashboard.png)
+
+
+![Invoice](https://github.com/sameermem0n/Ora-CRM-Dashboard/blob/92f217ba6f73119fc8f64888bfbf131b7dbd3c0c/public/assets/images/Screenshots/invoices_20.png)
+
+
+)
